@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: API de Mini Sondage
+  description: API pour la gestion des sondages en temps réel.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Serveur de développement
+
+paths:
+  /questions:
+    post:
+      summary: Créer une nouvelle question
+      description: Permet aux utilisateurs de créer une nouvelle question avec des options.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questionText:
+                  type: string
+                  description: Le texte de la question.
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      optionText:
+                        type: string
+                        description: Le texte de l'option.
+                      votes:
+                        type: integer
+                        description: Le nombre de votes pour cette option.
+                        example: 0
+      responses:
+        '201':
+          description: Question créée avec succès.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: Erreur de validation des données.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Erreur de validation"
+    get:
+      summary: Récupérer toutes les questions
+      description: Renvoie une liste de toutes les questions stockées.
+      responses:
+        '200':
+          description: Liste des questions récupérée avec succès.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+        '500':
+          description: Erreur interne du serveur.
+
+  /questions/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: ID de la question à mettre à jour ou à supprimer.
+        schema:
+          type: string
+
+    put:
+      summary: Mettre à jour une question
+      description: Modifie une question existante par son ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questionText:
+                  type: string
+                  description: Le texte de la question.
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      optionText:
+                        type: string
+                        description: Le texte de l'option.
+                      votes:
+                        type: integer
+                        description: Le nombre de votes pour cette option.
+                        example: 0
+      responses:
+        '200':
+          description: Question mise à jour avec succès.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '404':
+          description: Question non trouvée.
+        '400':
+          description: Erreur de validation des données.
+
+    delete:
+      summary: Supprimer une question
+      description: Supprime une question par son ID.
+      responses:
+        '204':
+          description: Question supprimée avec succès.
+        '404':
+          description: Question non trouvée.
+
+components:
+  schemas:
+    Question:
+      type: object
+      properties:
+        id:
+          type: string
+          description: L'ID unique de la question.
+        questionText:
+          type: string
+          description: Le texte de la question.
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              optionText:
+                type: string
+                description: Le texte de l'option.
+              votes:
+                type: integer
+                description: Le nombre de votes pour cette option.
+                example: 0

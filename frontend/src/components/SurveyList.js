@@ -12,7 +12,6 @@ const SurveyList = () => {
         const fetchSurveys = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/questions');
-                console.log('Sondages récupérés :', response.data); // Log pour vérifier
                 setSurveys(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des sondages :', error);
@@ -22,7 +21,6 @@ const SurveyList = () => {
         fetchSurveys();
 
         socket.on('newQuestion', (newSurvey) => {
-            console.log('Nouveau sondage reçu :', newSurvey); // Log pour vérifier la réception
             setSurveys((prevSurveys) => [...prevSurveys, newSurvey]);
         });
 
@@ -43,7 +41,7 @@ const SurveyList = () => {
         <div className="survey-list">
             <h2>Liste des Sondages</h2>
             {surveys.map(survey => (
-                <Survey key={survey._id} survey={survey} />
+                <Survey key={survey._id} survey={survey} setSurveys={setSurveys} />
             ))}
         </div>
     );
